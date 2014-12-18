@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+	 <title>Line Charts</title>
+	 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	 <script src="http://d3js.org/d3.v2.js"></script>
+	 <script src="linechart.js"></script>
+	 <style>
+		 #chart path {
+		 stroke: steelblue;
+		 stroke-width: 2;
+		 fill: none;
+		 }
+		 .axis { shape-rendering: crispEdges; }
+		 .x.axis line { stroke: lightgrey; }
+		 .x.axis .minor { stroke-opacity: .5; }
+		 .y.axis line, .y.axis path {
+			 fill: none;
+			 stroke: #000;
+		 }
+		 .infobox {
+		 border:2px solid steelblue;
+		 border-radius:4px;
+		 box-shadow:#333333 0px 0px 10px;
+		 margin:200px auto;
+		 padding:5px 10px;
+		 background:rgba(255, 255, 255, 0.8);
+		 position:absolute;
+		 top:0px;
+		 left:0px;
+		 z-index:10500;
+		 font-weight:bold;
+		 }
+	 </style>
+ </head>
+
+ <body onload="draw();">
+	 <div id="chart">
+	 </div>
+ </body>
+</html>
