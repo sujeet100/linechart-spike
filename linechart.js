@@ -13,6 +13,7 @@ function getDate(d) {
  var OUTER_CIRCLE_RADIUS = 12;
  var MARKER_COLOR = "#0F254B";
  var MARKER_COLOR_ON_HOVER="#228BC5"
+ var plotMargin=0.4;
 
 var getTickValues = function(data){
 	var array = 
@@ -59,7 +60,10 @@ data.sort(function(a, b) {
 // X scale will fit all values from data[] within pixels 0-w
  //var x = d3.scale.linear().domain([0, data.length]).range([0, w]);
  // Y scale will fit values from 0-10 within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
- var y = d3.scale.linear().domain([d3.min(data,function(d) { return d.billAmount; })*0.75, 1.25*d3.max(data, function(d) { return d.billAmount; } )]).range([h, 0]);
+ var minAmount = d3.min(data,function(d) { return d.billAmount; });
+ var maxAmount = d3.max(data, function(d) { return d.billAmount; });
+ var range = maxAmount -  minAmount;
+ var y = d3.scale.linear().domain([minAmount-plotMargin*range, maxAmount+plotMargin*range]).range([h, 0]);
  
 // create a line function that can convert data[] into x and y points
  var line = d3.svg.line()
@@ -153,6 +157,6 @@ var draw = function() {
   {'date': "2012-09-01", 'billAmount': 19},
    {'date': "2012-08-01", 'billAmount': 18.66},
     {'date': "2012-07-01", 'billAmount': 22},
-     {'date': "2012-06-01", 'billAmount': 14.8}];
+     {'date': "2012-06-01", 'billAmount': 28.8}];
  drawChart(data);
  }
