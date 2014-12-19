@@ -8,6 +8,11 @@ function getDate(d) {
  }
 
  var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+ var DEFAULT_CIRCLE_RADIUS = 6;
+ var CIRCLE_RADIUS_ON_HOVER = 8;
+ var OUTER_CIRCLE_RADIUS = 12;
+ var MARKER_COLOR = "#0F254B";
+ var MARKER_COLOR_ON_HOVER="#228BC5"
 
 var getTickValues = function(data){
 	var array = 
@@ -19,16 +24,16 @@ var getTickValues = function(data){
  
 function showDataInTooltip(obj, d) {
  var coord = d3.mouse(obj);
- var infobox = d3.select(".infobox");
+ var tip = d3.select(".tip");
  // now we just position the infobox roughly where our mouse is
- infobox.style("left", (coord[0] + 100) + "px" );
- infobox.style("top", (coord[1] - 175) + "px");
- $(".infobox").html(d);
- $(".infobox").show();
+ tip.style("left", (coord[0] + 100) + "px" );
+ tip.style("top", (coord[1] - 175) + "px");
+ $(".tip").html(d);
+ $(".tip").show();
  }
  
 function hideDataInTooltip() {
- $(".infobox").hide();
+ $(".tip").hide();
  }
  
 var drawChart = function(data) {
@@ -54,7 +59,7 @@ data.sort(function(a, b) {
 // X scale will fit all values from data[] within pixels 0-w
  //var x = d3.scale.linear().domain([0, data.length]).range([0, w]);
  // Y scale will fit values from 0-10 within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
- var y = d3.scale.linear().domain([-5, d3.max(data, function(d) { return d.billAmount; } )]).range([h, 0]);
+ var y = d3.scale.linear().domain([d3.min(data,function(d) { return d.billAmount; })*0.75, 1.25*d3.max(data, function(d) { return d.billAmount; } )]).range([h, 0]);
  
 // create a line function that can convert data[] into x and y points
  var line = d3.svg.line()
@@ -99,17 +104,6 @@ data.sort(function(a, b) {
  
 // Add the line by appending an svg:path element with the data line we created above
  // do this AFTER the axes above so that the line is above the tick-lines
- graph
- .selectAll("circle")
- .data(data)
- .enter().append("circle")
- .attr("fill", "steelblue")
- .attr("r", 5)
- .attr("cx", xx)
- .attr("cy", yy)
- .on("mouseover", function(d) { showDataInTooltip(this, d.billAmount);})
- .on("mouseout", function(){ hideDataInTooltip();});
- 
  graph.append("svg:path").attr("d", line(data));
  graph.append("svg:text")
  .attr("x", -200)
@@ -118,8 +112,40 @@ data.sort(function(a, b) {
  .attr("transform", "rotate(-90)")
  .text("Bill");
  
+ graph
+ .selectAll("circle")
+ .data(data)
+ .enter().append("circle")
+ .attr("r", DEFAULT_CIRCLE_RADIUS)
+ .attr("cx", xx)
+ .attr("cy", yy)
+ .attr("fill",MARKER_COLOR)
+ .on("mouseenter", function(d) { 
+ 	showDataInTooltip(this, "&pound;"+d.billAmount);
+ 	
+ 	//change radius and color of marker
+ 	d3.select(this)
+ 	.attr("r", CIRCLE_RADIUS_ON_HOVER)
+ 	.attr("fill",MARKER_COLOR_ON_HOVER);
+ 	
+ 	//add an outer circle to marker
+ 	graph.append("circle") 
+ 	 .attr("r", OUTER_CIRCLE_RADIUS)
+	 .attr("cx", d3.select(this).attr("cx"))
+	 .attr("class","outer")
+	 .attr("fill", MARKER_COLOR_ON_HOVER)
+	 .attr('fill-opacity', 0.5)
+	 .attr("cy", d3.select(this).attr("cy"))
+	 .attr("pointer-events", "none") //disable pointer events for outer circle
+})
+ .on("mouseleave", function(){ 
+ 	hideDataInTooltip();
+ 	d3.select(this).attr("r", DEFAULT_CIRCLE_RADIUS).attr("fill",MARKER_COLOR);
+ 	d3.select("circle.outer").remove()
+ });
  
- $("#chart").append("<div class='infobox' style='display:none;'>Test</div>");
+ 
+ $("#chart").append("<div class='tip' style='display:none;'>Test</div>");
  }
  
 var draw = function() {
@@ -127,6 +153,6 @@ var draw = function() {
   {'date': "2012-09-01", 'billAmount': 19},
    {'date': "2012-08-01", 'billAmount': 18.66},
     {'date': "2012-07-01", 'billAmount': 22},
-     {'date': "2012-06-01", 'billAmount': 18.8}];
+     {'date': "2012-06-01", 'billAmount': 14.8}];
  drawChart(data);
  }
