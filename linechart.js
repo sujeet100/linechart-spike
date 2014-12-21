@@ -1,3 +1,12 @@
+ var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
+ var DEFAULT_CIRCLE_RADIUS = 6;
+ var CIRCLE_RADIUS_ON_HOVER = 8;
+ var OUTER_CIRCLE_RADIUS = 12;
+ var MARKER_COLOR = "#0F254B";
+ var MARKER_COLOR_ON_HOVER="#228BC5"
+ var plotMargin=0.4;
+
+
 function getDate(d) {
  var dt = new Date(d.date);
  dt.setHours(0);
@@ -7,13 +16,6 @@ function getDate(d) {
  return dt;
  }
 
- var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
- var DEFAULT_CIRCLE_RADIUS = 6;
- var CIRCLE_RADIUS_ON_HOVER = 8;
- var OUTER_CIRCLE_RADIUS = 12;
- var MARKER_COLOR = "#0F254B";
- var MARKER_COLOR_ON_HOVER="#228BC5"
- var plotMargin=0.4;
 
 var getTickValues = function(data){
 	var array = 
@@ -24,13 +26,12 @@ var getTickValues = function(data){
 }
  
 function showDataInTooltip(obj, d) {
- var coord = d3.mouse(obj);
- var tip = d3.select(".tip");
- // now we just position the infobox roughly where our mouse is
- tip.style("left", (coord[0] + 100) + "px" );
- tip.style("top", (coord[1] - 175) + "px");
- $(".tip").html(d);
- $(".tip").show();
+	 var coord = d3.mouse(obj);
+	 var tip = d3.select(".tip");
+	 tip.style("left", (coord[0] + 100) + "px" );
+	 tip.style("top", (coord[1] - 175) + "px");
+	 $(".tip").html(d);
+	 $(".tip").show();
  }
  
 function hideDataInTooltip() {
@@ -44,11 +45,11 @@ var drawChart = function(data) {
  var h = 360 - m[0] - m[2]; // height
  
 data.sort(function(a, b) {
- var d1 = getDate(a);
- var d2 = getDate(b);
- if (d1 == d2) return 0;
- if (d1 > d2) return 1;
- return -1;
+	 var d1 = getDate(a);
+	 var d2 = getDate(b);
+	 if (d1 == d2) return 0;
+	 if (d1 > d2) return 1;
+	 return -1;
  });
  
 // get max and min dates - this assumes data is sorted
@@ -62,6 +63,7 @@ data.sort(function(a, b) {
  // Y scale will fit values from 0-10 within pixels h-0 (Note the inverted domain for the y-scale: bigger is up!)
  var minAmount = d3.min(data,function(d) { return d.billAmount; });
  var maxAmount = d3.max(data, function(d) { return d.billAmount; });
+ var mean = d3.mean(data, function(d) { return d.billAmount; })
  var range = maxAmount -  minAmount;
  var y = d3.scale.linear().domain([minAmount-plotMargin*range, maxAmount+plotMargin*range]).range([h, 0]);
  
@@ -92,6 +94,7 @@ data.sort(function(a, b) {
  var xAxis = d3.svg.axis().scale(x).ticks(10).tickFormat(function(d){
  	return months[d];
  });
+
  // Add the x-axis.
  graph.append("svg:g")
  .attr("class", "x axis")
@@ -99,13 +102,26 @@ data.sort(function(a, b) {
  .call(xAxis);
  
 // create left yAxis
- var yAxisLeft = d3.svg.axis().scale(y).ticks(10).orient("left").tickSize(0); //.tickFormat(formalLabel);
+ var yAxisLeft = d3.svg.axis().scale(y).ticks(10).orient("left").tickSize(0);
+ 
  // Add the y-axis to the left
  graph.append("svg:g")
  .attr("class", "y axis")
  .attr("transform", "translate(0,0)")
  .call(yAxisLeft);
  
+
+//mean line
+ graph.append("line")
+ 	.attr("class", "average-line")
+ 	.attr("x1", 0)
+ 	.attr("y1", y(mean))
+ 	.attr("x2", w)
+ 	.attr("y2", y(mean))
+ 	.attr("stroke-width", 1)
+    .attr("stroke", "steelblue");
+
+
 // Add the line by appending an svg:path element with the data line we created above
  // do this AFTER the axes above so that the line is above the tick-lines
  graph.append("svg:path").attr("d", line(data));
@@ -115,7 +131,9 @@ data.sort(function(a, b) {
  .attr("dy", ".1em")
  .attr("transform", "rotate(-90)")
  .text("Bill");
- 
+
+
+ //markers
  graph
  .selectAll("circle")
  .data(data)
@@ -148,7 +166,7 @@ data.sort(function(a, b) {
  	d3.select("circle.outer").remove()
  });
  
- 
+ //tooltip container
  $("#chart").append("<div class='tip' style='display:none;'>Test</div>");
  }
  
