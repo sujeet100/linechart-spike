@@ -4,7 +4,7 @@
  var OUTER_CIRCLE_RADIUS = 12;
  var MARKER_COLOR = "#0F254B";
  var MARKER_COLOR_ON_HOVER="#228BC5"
- var plotMargin=0.4;
+ var plotMargin=0.8;
 
 
 function getDate(d) {
@@ -171,10 +171,11 @@ data.sort(function(a, b) {
  }
  
 var draw = function() {
- var data = [ {'date': "2012-10-01", 'billAmount': 23.4},
-  {'date': "2012-09-01", 'billAmount': 19},
-   {'date': "2012-08-01", 'billAmount': 18.66},
-    {'date': "2012-07-01", 'billAmount': 22},
-     {'date': "2012-06-01", 'billAmount': 28.8}];
+ var data = [ {'date': "2012-10-01", 'billAmount': 27.4},
+  {'date': "2012-09-01", 'billAmount': 25},
+   {'date': "2012-08-01", 'billAmount': 26.66},
+    {'date': "2012-07-01", 'billAmount': 32},
+     {'date': "2012-06-01", 'billAmount': 25.8},
+     {'date': "2012-05-01", 'billAmount': 23.8}];
  drawChart(data);
  }
