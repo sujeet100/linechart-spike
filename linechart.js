@@ -17,14 +17,6 @@ function getDate(d) {
  }
 
 
-var getTickValues = function(data){
-	var array = 
-	$.map(data, function(e, i){
-		return months[getDate(e).getMonth()];
-	});
-	return array
-}
- 
 function showDataInTooltip(obj, d) {
 	 var coord = d3.mouse(obj);
 	 var tip = d3.select(".tip");
@@ -84,10 +76,10 @@ data.sort(function(a, b) {
  
  
 // Add an SVG element with the desired dimensions and margin.
- var graph = d3.select("#chart").append("svg:svg")
+ var graph = d3.select("#chart").append("svg")
  .attr("width", w + m[1] + m[3])
  .attr("height", h + m[0] + m[2])
- .append("svg:g")
+ .append("g")
  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
  
 // create yAxis
@@ -96,7 +88,7 @@ data.sort(function(a, b) {
  });
 
  // Add the x-axis.
- graph.append("svg:g")
+ graph.append("g")
  .attr("class", "x axis")
  .attr("transform", "translate(0," + h + ")")
  .call(xAxis);
@@ -142,7 +134,7 @@ data.sort(function(a, b) {
  .attr("cx", xx)
  .attr("cy", yy)
  .attr("fill",MARKER_COLOR)
- .on("mouseenter", function(d) { 
+ .on("mouseover", function(d) { 
  	showDataInTooltip(this, "&pound;"+d.billAmount);
  	
  	//change radius and color of marker
@@ -160,22 +152,23 @@ data.sort(function(a, b) {
 	 .attr("cy", d3.select(this).attr("cy"))
 	 .attr("pointer-events", "none") //disable pointer events for outer circle
 })
- .on("mouseleave", function(){ 
+ .on("mouseout", function(){ 
  	hideDataInTooltip();
  	d3.select(this).attr("r", DEFAULT_CIRCLE_RADIUS).attr("fill",MARKER_COLOR);
  	d3.select("circle.outer").remove()
  });
+
  
  //tooltip container
  $("#chart").append("<div class='tip' style='display:none;'>Test</div>");
  }
  
 var draw = function() {
- var data = [ {'date': "2012-10-01", 'billAmount': 27.4},
-  {'date': "2012-09-01", 'billAmount': 25},
-   {'date': "2012-08-01", 'billAmount': 26.66},
-    {'date': "2012-07-01", 'billAmount': 32},
-     {'date': "2012-06-01", 'billAmount': 25.8},
-     {'date': "2012-05-01", 'billAmount': 23.8}];
+ var data = [ {'date': "2012/10/01", 'billAmount': 27.4},
+  {'date': "2012/09/01", 'billAmount': 25},
+   {'date': "2012/08/01", 'billAmount': 26.66},
+    {'date': "2012/07/01", 'billAmount': 32},
+     {'date': "2012/06/01", 'billAmount': 25.8},
+     {'date': "2012/05/01", 'billAmount': 23.8}];
  drawChart(data);
  }

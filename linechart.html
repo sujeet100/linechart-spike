@@ -1,15 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
- <head>
-	 <title>Line Charts</title>
-	 <script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-	  <!--[if lte IE 8]>
-	  <script src="r2d3.min.js" charset="utf-8"></script>
-	  <![endif]-->
-
-    <script src="d3.min.js"></script>
-	 <script src="linechart.js"></script>
-	 <style>
+<meta charset="utf-8">
+ <style>
 		 #chart path {
 		 stroke: #d8dbe2;
 		 stroke-width: 1;
@@ -59,10 +50,12 @@
 	fill:steelblue!important;
 }
 	 </style>
- </head>
-
- <body onload="draw();">
-	 <div id="chart">
-	 </div>
- </body>
-</html>
+<body onload="draw();">
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<!--[if lte IE 8]><script src="r2d3.js"></script><![endif]-->
+<!--[if gte IE 9]><!-->
+<script src="d3.js"></script>
+<!--<![endif]-->
+<script src="linechart.js"></script>
+<div id="chart"></div>
+</body>
