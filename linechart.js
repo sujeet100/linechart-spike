@@ -77,11 +77,17 @@ data.sort(function(a, b) {
 // Add an SVG element with the desired dimensions and margin.
  var graph = d3.select("#chart").append("svg")
  .attr("preserveAspectRatio","xMinYMin meet")
- .attr("viewBox","0 0 800 960")
- .attr("width","800")
- .attr("height","960")
+ .attr("viewBox","0 0 800 400")
  .append("g")
  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
+
+ var isIE8 = getInternetExplorerVersion()==8.0;
+ if(isIE8){
+ 	d3.select("svg")
+ 	.attr("width",800)
+ 	.attr("height",400)
+ 	.attr("viewBox","0 0 "+w+" "+h);
+ }
  
 // create yAxis
  var xAxis = d3.svg.axis().scale(x).ticks(10).tickFormat(function(d){
@@ -162,6 +168,23 @@ data.sort(function(a, b) {
  $("#chart").append("<div class='tip' style='display:none;'>Test</div>");
  }
  
+
+
+var getInternetExplorerVersion= function()
+// Returns the version of Internet Explorer or a -1
+// (indicating the use of another browser).
+{
+  var rv = -1; // Return value assumes failure.
+  if (navigator.appName == 'Microsoft Internet Explorer')
+  {
+    var ua = navigator.userAgent;
+    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+    if (re.exec(ua) != null)
+      rv = parseFloat( RegExp.$1 );
+  }
+  return rv;
+}
+
 var draw = function() {
  var data = [ {'date': "2012/10/01", 'billAmount': 27.4},
   {'date': "2012/09/01", 'billAmount': 25},
