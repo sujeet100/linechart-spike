@@ -17,11 +17,10 @@ function getDate(d) {
  }
 
 
-function showDataInTooltip(obj, d) {
-	 var coord = d3.mouse(obj);
+function showDataInTooltip(obj, d, x ,y) {
 	 var tip = d3.select(".tip");
-	 tip.style("left", (coord[0] + 100) + "px" );
-	 tip.style("top", (coord[1] - 175) + "px");
+	 tip.style("left", (x+100) + "px" );
+	 tip.style("top", (y-175) + "px");
 	 $(".tip").html(d);
 	 $(".tip").show();
  }
@@ -45,8 +44,8 @@ data.sort(function(a, b) {
  });
  
 // get max and min dates - this assumes data is sorted
- var minDate = getDate(data[0]),
- maxDate = getDate(data[data.length-1]);
+ var minDate = getDate(data[0]);
+ var maxDate = getDate(data[data.length-1]);
  
  var x = d3.scale.linear().domain([new Date(minDate.setDate(0)).getMonth(), maxDate.getMonth()]).range([0, w]);
  
@@ -77,8 +76,8 @@ data.sort(function(a, b) {
  
 // Add an SVG element with the desired dimensions and margin.
  var graph = d3.select("#chart").append("svg")
- .attr("width", w + m[1] + m[3])
- .attr("height", h + m[0] + m[2])
+ .attr("preserveAspectRatio","xMinYMin meet")
+ .attr("viewBox","0 0 800 960")
  .append("g")
  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
  
@@ -134,8 +133,8 @@ data.sort(function(a, b) {
  .attr("cx", xx)
  .attr("cy", yy)
  .attr("fill",MARKER_COLOR)
- .on("mouseover", function(d) { 
- 	showDataInTooltip(this, "&pound;"+d.billAmount);
+ .on("mouseenter", function(d) { 
+ 	showDataInTooltip(this, "&pound;"+d.billAmount, xx(d), yy(d));
  	
  	//change radius and color of marker
  	d3.select(this)
@@ -152,13 +151,11 @@ data.sort(function(a, b) {
 	 .attr("cy", d3.select(this).attr("cy"))
 	 .attr("pointer-events", "none") //disable pointer events for outer circle
 })
- .on("mouseout", function(){ 
+ .on("mouseleave", function(){
  	hideDataInTooltip();
  	d3.select(this).attr("r", DEFAULT_CIRCLE_RADIUS).attr("fill",MARKER_COLOR);
- 	d3.select("circle.outer").remove()
+ 	d3.select("circle.outer").remove() 
  });
-
- 
  //tooltip container
  $("#chart").append("<div class='tip' style='display:none;'>Test</div>");
  }
