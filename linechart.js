@@ -5,7 +5,24 @@
  var MARKER_COLOR = "#0F254B";
  var MARKER_COLOR_ON_HOVER="#228BC5"
  var plotMargin=0.8;
+ var tipH = 30;
+ var tipW = 100;
+ var getInternetExplorerVersion= function()
+// Returns the version of Internet Explorer or a -1
+// (indicating the use of another browser).
+{
+  var rv = -1; // Return value assumes failure.
+  if (navigator.appName == 'Microsoft Internet Explorer')
+  {
+    var ua = navigator.userAgent;
+    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+    if (re.exec(ua) != null)
+      rv = parseFloat( RegExp.$1 );
+  }
+  return rv;
+}
 
+ var isIE8 = getInternetExplorerVersion()==8.0;
 
 function getDate(d) {
  var dt = new Date(d.date);
@@ -17,16 +34,14 @@ function getDate(d) {
  }
 
 
-function showDataInTooltip(obj, d, x ,y) {
-	 var tip = d3.select(".tip");
-	 tip.style("left", (x+100) + "px" );
-	 tip.style("top", (y-175) + "px");
-	 $(".tip").html(d);
-	 $(".tip").show();
- }
- 
+
 function hideDataInTooltip() {
- $(".tip").hide();
+  	d3.select(".tip").attr("visibility","hidden");
+  	d3.select(".tip-text").attr("visibility","hidden");
+  	if(isIE8){
+  		d3.select(".tip").remove();
+  		d3.select(".tip-text").remove();
+  	}
  }
  
 var drawChart = function(data) {
@@ -72,7 +87,32 @@ data.sort(function(a, b) {
  
  function xx(e) { return x(getDate(e).getMonth()); };
  function yy(e) { return y(e.billAmount); };
- 
+
+function showDataInTooltip(d) {
+	 var tipX=xx(d)-tipW/2-OUTER_CIRCLE_RADIUS;
+ 	var tipY=yy(d)-tipH-OUTER_CIRCLE_RADIUS*2;
+ 	if(isIE8){
+ 		graph.append("rect")
+	    .attr("width",tipW)
+	    .attr("height",tipH)
+	    .attr("class","tip");
+
+	    graph.append("text") 
+		.text("lol")
+		.attr("fill","red")
+		.attr("class","tip-text")
+		.attr("z-index","11");   
+
+ 	}
+ 	d3.select(".tip")
+ 	.attr("transform","translate("+tipX+","+tipY+")")
+ 	.attr("visibility","visible");
+
+ 	d3.select(".tip-text")
+ 	.attr("transform","translate("+(tipX+10)+","+(tipY+20)+")")
+ 	.text("$"+d.billAmount)
+ 	.attr("visibility","visible");
+ } 
  
 // Add an SVG element with the desired dimensions and margin.
  var graph = d3.select("#chart").append("svg")
@@ -81,7 +121,6 @@ data.sort(function(a, b) {
  .append("g")
  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
 
- var isIE8 = getInternetExplorerVersion()==8.0;
  if(isIE8){
  	d3.select("svg")
  	.attr("width",800)
@@ -142,8 +181,8 @@ data.sort(function(a, b) {
  .attr("cy", yy)
  .attr("fill",MARKER_COLOR)
  .on("mouseenter", function(d) { 
- 	showDataInTooltip(this, "&pound;"+d.billAmount, xx(d), yy(d));
- 	
+ 	showDataInTooltip(d);
+
  	//change radius and color of marker
  	d3.select(this)
  	.attr("r", CIRCLE_RADIUS_ON_HOVER)
@@ -164,26 +203,25 @@ data.sort(function(a, b) {
  	d3.select(this).attr("r", DEFAULT_CIRCLE_RADIUS).attr("fill",MARKER_COLOR);
  	d3.select("circle.outer").remove() 
  });
- //tooltip container
- $("#chart").append("<div class='tip' style='display:none;'>Test</div>");
+
+if(!isIE8){
+	 //tooltip container
+	 graph.append("rect")
+	    .attr("width",tipW)
+	    .attr("height",tipH)
+	    .attr("class","tip")
+	    .attr("visibility","hidden");
+
+	graph.append("text") 
+		.text("lol")
+		.attr("fill","red")
+		.attr("class","tip-text")
+		.attr("z-index","11")
+		.attr("visibility","hidden");   
+}
+
  }
  
-
-
-var getInternetExplorerVersion= function()
-// Returns the version of Internet Explorer or a -1
-// (indicating the use of another browser).
-{
-  var rv = -1; // Return value assumes failure.
-  if (navigator.appName == 'Microsoft Internet Explorer')
-  {
-    var ua = navigator.userAgent;
-    var re  = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-    if (re.exec(ua) != null)
-      rv = parseFloat( RegExp.$1 );
-  }
-  return rv;
-}
 
 var draw = function() {
  var data = [ {'date': "2012/10/01", 'billAmount': 27.4},
