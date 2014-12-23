@@ -8651,11 +8651,7 @@ d3 = function() {
         d3.event = e;
         args[0] = node.__data__;
         try {
-        if(node.raphaelNode){
-          listener.apply(node.raphaelNode, args);
-        }else{
           listener.apply(node, args);
-        }
         } finally {
           d3.event = o;
         }

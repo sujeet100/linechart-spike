@@ -78,6 +78,8 @@ data.sort(function(a, b) {
  var graph = d3.select("#chart").append("svg")
  .attr("preserveAspectRatio","xMinYMin meet")
  .attr("viewBox","0 0 800 960")
+ .attr("width","800")
+ .attr("height","960")
  .append("g")
  .attr("transform", "translate(" + m[3] + "," + m[0] + ")");
  
