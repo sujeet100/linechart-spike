@@ -1,18 +1,20 @@
 var baseWidth = 700;
 var baseHeight = 360;
-var margins = [20, 40, 20, 50];
+var margins = [20, 20, 20, 20];
 var width = baseWidth - margins[1] - margins[3];
 var height = baseHeight - margins[0] - margins[2];
 var viewBox = [0, 0, 800, 500];
 var plotMargin = 0.8;
 var toolTipH = 30;
 var toolTipW = 100;
+var toolTipMarginLeft = 20;
+var toolTipMarginTop = 20;
 var averageLinePosition = '150 300';
 var defaultMarkerRadius = 6;
 var markerRadiusOnHover = 8;
 var outerMarkerRadius = 12;
 var markerColor = "#0F254B";
-var markerColorOnHover = "#228BC5"
+var markerColorOnHover = "#228BC5";
 
 var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
@@ -80,14 +82,14 @@ var drawChart = function (data) {
         .x(getX)
         .y(getY);
 
-    var toolTip = new (function () {
+    var toolTip = new(function () {
         var showToolTip = function (bill, toolTipX, toolTipY) {
             d3.select(".tip")
                 .attr("transform", "translate(" + toolTipX + "," + toolTipY + ")")
                 .attr("visibility", "visible");
 
             d3.select(".tip-text")
-                .attr("transform", "translate(" + (toolTipX + 10) + "," + (toolTipY + 20) + ")")
+                .attr("transform", "translate(" + (toolTipX + toolTipMarginLeft) + "," + (toolTipY + toolTipMarginTop) + ")")
                 .text("$" + bill.billAmount)
                 .attr("visibility", "visible");
         };
@@ -100,7 +102,6 @@ var drawChart = function (data) {
                 .attr("visibility", "hidden");
 
             graph.append("text")
-                .text("lol")
                 .attr("class", "tip-text")
                 .attr("visibility", "hidden");
         };
@@ -164,9 +165,7 @@ var drawChart = function (data) {
         .attr("x1", 0)
         .attr("y1", axis.y(mean))
         .attr("x2", width)
-        .attr("y2", axis.y(mean))
-        .attr("stroke-width", 1)
-        .attr("fill", "steelblue");
+        .attr("y2", axis.y(mean));
 
     // Add the line by appending an svg:path element with the data line we created above
     // do this AFTER the axes above so that the line is above the tick-lines

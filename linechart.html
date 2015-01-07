@@ -8,18 +8,17 @@
     }
     .axis {
         shape-rendering: crispEdges;
+        stroke-width: 1;
+    }
+    .axis text {
+        font-size: 20px;
     }
     .x.axis line {
         stroke: lightgrey;
+        stroke-width: 1.5;
     }
     .x.axis .minor {
         stroke-opacity: .5;
-    }
-    .x.axis path {
-        stroke: #d8dbe2!important;
-    }
-    .y.axis path {
-        stroke: #d8dbe2!important;
     }
     .y.axis line,
     .y.axis path {
@@ -58,7 +57,8 @@
         z-index: 11;
     }
     .average-line {
-        fill: steelblue!important;
+        stroke: steelblue;
+        stroke-width: 1;
     }
 </style>
 
@@ -69,5 +69,9 @@
     <script src="d3.js"></script>
     <!--<![endif]-->
     <script src="linechart.js"></script>
-    <div id="chart"></div>
+    <div style="border:1px solid green">
+        <h3>Your Bill Trend</h3>
+        <div id="chart" style="width:300px;height:150;border:1px solid
+     red"></div>
+    </div>
 </body>
