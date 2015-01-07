@@ -7,8 +7,8 @@ var viewBox = [0, 0, 800, 500];
 var plotMargin = 0.8;
 var toolTipH = 30;
 var toolTipW = 100;
-var toolTipMarginLeft = 20;
-var toolTipMarginTop = 20;
+var toolTipTextMarginLeft = 20;
+var toolTipTextMarginTop = 20;
 var averageLinePosition = '150 300';
 var defaultMarkerRadius = 6;
 var markerRadiusOnHover = 8;
@@ -89,7 +89,7 @@ var drawChart = function (data) {
                 .attr("visibility", "visible");
 
             d3.select(".tip-text")
-                .attr("transform", "translate(" + (toolTipX + toolTipMarginLeft) + "," + (toolTipY + toolTipMarginTop) + ")")
+                .attr("transform", "translate(" + (toolTipX + toolTipTextMarginLeft) + "," + (toolTipY + toolTipTextMarginTop) + ")")
                 .text("$" + bill.billAmount)
                 .attr("visibility", "visible");
         };
